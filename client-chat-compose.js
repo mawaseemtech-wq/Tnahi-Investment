@@ -336,6 +336,7 @@ const ClientMessages = {
               { name: "note", label: "ملاحظة مرفقة", type: "textarea" },
             ],
             onSubmit: (data) => {
+              
               let form;
               if (data.formTpl === "حزمة نماذج (اختيار)") {
                 form = ClientBridge.buildChoiceForm(catalog.slice(0, 4), "اختر نموذجاً للتعبئة");
