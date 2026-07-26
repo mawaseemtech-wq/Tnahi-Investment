@@ -1,9 +1,13 @@
 /* محاكاة تطبيق الجوال — سنام / تناهي */
 .mobile-sim {
   display: grid;
-  grid-template-columns: 280px minmax(280px, 340px) 1fr;
-  gap: 1rem;
+  grid-template-columns: minmax(220px, 260px) minmax(300px, 360px) minmax(240px, 1fr);
+  gap: 1.15rem;
   align-items: start;
+}
+
+.mobile-sim-live {
+  animation: rise-in 0.45s var(--ease) both;
 }
 
 .mobile-sim-prep {
@@ -13,6 +17,13 @@
 .mobile-side {
   display: grid;
   gap: 0.75rem;
+}
+
+.mobile-side-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--muted);
+  letter-spacing: 0.02em;
 }
 
 .mobile-roles {
@@ -378,17 +389,32 @@
 }
 
 /* Phone frame */
+.phone-stage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: sticky;
+  top: 0.75rem;
+}
+
 .phone-frame {
   width: 100%;
-  max-width: 320px;
+  max-width: 340px;
   margin: 0 auto;
-  background: #0a1c2e;
-  border-radius: 36px;
-  padding: 12px;
+  background: linear-gradient(165deg, #0a1c2e 0%, #12283f 100%);
+  border-radius: 38px;
+  padding: 14px;
   box-shadow:
-    0 24px 50px rgba(15, 43, 70, 0.28),
-    inset 0 0 0 2px rgba(200, 161, 90, 0.25);
+    0 28px 56px rgba(15, 43, 70, 0.32),
+    0 0 0 1px rgba(200, 161, 90, 0.18),
+    inset 0 0 0 2px rgba(200, 161, 90, 0.28);
   position: relative;
+  animation: phone-pop 0.55s var(--ease) both;
+}
+
+@keyframes phone-pop {
+  from { opacity: 0; transform: translateY(18px) scale(0.97); }
+  to { opacity: 1; transform: none; }
 }
 
 .phone-notch {
@@ -405,7 +431,7 @@
   background: #f3f6f9;
   border-radius: 28px;
   overflow: hidden;
-  min-height: 560px;
+  min-height: 580px;
   display: flex;
   flex-direction: column;
 }
@@ -737,6 +763,22 @@
   box-shadow: 0 12px 28px rgba(15, 43, 70, 0.06);
 }
 
+.guide-scenario {
+  background: #f7f9fc;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.7rem;
+  margin-bottom: 0.85rem;
+}
+
+.guide-scenario > span {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
 .guide-top {
   display: flex;
   align-items: center;
@@ -861,11 +903,23 @@
   .mobile-sim {
     grid-template-columns: 1fr 1fr;
   }
+  .mobile-sim-live {
+    grid-template-columns: minmax(240px, 1fr) minmax(280px, 340px);
+  }
   .mobile-sim-prep {
     grid-template-columns: 1fr;
   }
   .mobile-guide {
     grid-column: 1 / -1;
+  }
+  .phone-stage {
+    position: static;
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .mobile-side {
+    grid-row: 1;
+    grid-column: 1;
   }
   .prep-steps {
     grid-template-columns: 1fr 1fr;
@@ -876,10 +930,26 @@
 }
 
 @media (max-width: 700px) {
-  .mobile-sim {
+  .mobile-sim,
+  .mobile-sim-live {
     grid-template-columns: 1fr;
+  }
+  .phone-stage {
+    grid-row: auto;
+    grid-column: auto;
+    order: -1;
+  }
+  .mobile-side {
+    grid-row: auto;
+    grid-column: auto;
   }
   .prep-summary {
     grid-template-columns: 1fr;
+  }
+  .phone-frame {
+    max-width: 300px;
+  }
+  .phone-screen {
+    min-height: 520px;
   }
 }
