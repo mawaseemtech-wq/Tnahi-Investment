@@ -33,6 +33,8 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -43,6 +45,14 @@ body {
   overflow-x: hidden;
   line-height: 1.6;
   padding-bottom: 42px;
+  min-width: 0;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
 }
 
 button,
@@ -1529,6 +1539,10 @@ tbody tr:hover {
     inset: 0 auto 0 0;
     width: min(var(--sidebar), 88vw);
     transform: translateX(110%);
+    z-index: 60;
+    transition: transform 0.28s ease;
+    padding-top: max(1.25rem, env(safe-area-inset-top));
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
   }
 
   html[dir="rtl"] .sidebar {
@@ -1545,20 +1559,102 @@ tbody tr:hover {
   }
 
   .topbar {
-    padding: 1rem;
+    padding: 0.75rem 0.85rem;
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+    gap: 0.5rem;
+  }
+
+  .topbar-title h2 {
+    font-size: clamp(0.95rem, 4vw, 1.15rem);
+  }
+
+  .topbar-title p {
+    font-size: 0.75rem;
   }
 
   .content {
-    padding: 1rem;
+    padding: clamp(0.75rem, 2.5vw, 1rem);
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 
   .live-badge {
     display: none;
   }
 
+  .user-chip {
+    font-size: 0.78rem;
+    max-width: 42vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .doc-meta,
   .sign-row {
     grid-template-columns: 1fr;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-wrap table {
+    min-width: 520px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .panel-head {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .site-footer p {
+    font-size: clamp(0.62rem, 2.6vw, 0.72rem);
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  .modal-host {
+    padding: 0.5rem;
+    align-items: end;
+    place-items: end center;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: min(88dvh, 640px);
+    overflow: auto;
+    border-radius: 18px 18px 12px 12px;
+  }
+
+  .login-float {
+    padding-left: max(0.85rem, env(safe-area-inset-left));
+    padding-right: max(0.85rem, env(safe-area-inset-right));
+    padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
+  }
+
+  .login-input input {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid,
+  .ops-kpi-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .btn {
+    min-height: 44px;
   }
 }
 
