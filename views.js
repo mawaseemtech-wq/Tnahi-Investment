@@ -1793,7 +1793,7 @@ const Views = {
               <div class="plat-section control-dash-day">
                 <div class="plat-section-head">
                   <h3>تطبيق الجوال</h3>
-                  <p>محاكاة كاملة مع آلية تحضير وخيارات أدوار ومواقع وسيناريوهات تشغيل — حارس · مشرف · عميل</p>
+                  <p>محاكاة مباشرة — حارس · مشرف · عميل مع تبديل المواقع والسيناريوهات</p>
                 </div>
                 ${typeof MobileSim !== "undefined" ? MobileSim.shellHtml() : `<p class="muted">تعذر تحميل محاكاة التطبيق</p>`}
               </div>
