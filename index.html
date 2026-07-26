@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f2b46" />
   <title>التقنية والتحول الرقمي | سنام — تناهي للاستثمار</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -60,6 +61,10 @@
       <div class="dpt-glow" aria-hidden="true"></div>
       <div class="dpt-shine" aria-hidden="true"></div>
 
+      <button type="button" class="dpt-menu-btn" id="platform-menu-toggle" aria-label="فتح القائمة" aria-expanded="false" aria-controls="platform-aside">
+        <i class="bi bi-list"></i>
+      </button>
+
       <div class="digital-portal-brand">
         <img class="panel-logo" src="logo-sanam-tanahi.png" alt="سنام للحراسات الأمنية · تناهي للاستثمار" />
       </div>
@@ -84,6 +89,8 @@
         </div>
       </div>
     </header>
+
+    <div class="platform-nav-backdrop" id="platform-nav-backdrop" hidden></div>
 
     <div class="digital-shell">
       <main class="digital-portal-content" id="content"></main>
