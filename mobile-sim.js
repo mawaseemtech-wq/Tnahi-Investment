@@ -2,10 +2,10 @@ const MobileSim = {
   role: sessionStorage.getItem("mobile_sim_role") || "guard",
   tab: sessionStorage.getItem("mobile_sim_tab") || "home",
   siteId: sessionStorage.getItem("mobile_sim_site") || "thaqafa",
-  ready: sessionStorage.getItem("mobile_sim_ready") === "1",
+  ready: true,
   prepStep: Number(sessionStorage.getItem("mobile_sim_prep") || 0),
   tourStep: Number(sessionStorage.getItem("mobile_sim_tour") || 0),
-  shiftOn: sessionStorage.getItem("mobile_sim_shift") === "1",
+  shiftOn: sessionStorage.getItem("mobile_sim_shift") !== "0",
   notifyOn: sessionStorage.getItem("mobile_sim_notify") !== "0",
   scenario: sessionStorage.getItem("mobile_sim_scenario") || "normal",
 
@@ -219,9 +219,16 @@ const MobileSim = {
 
   /* ===== واجهة التطبيق ===== */
   appShell() {
+    const scenarios = [
+      { id: "normal", title: "تشغيل اعتيادي" },
+      { id: "busy", title: "ذروة زوار" },
+      { id: "drill", title: "تمرين طوارئ" },
+    ];
+
     return `
-      <div class="mobile-sim" id="mobile-sim">
+      <div class="mobile-sim mobile-sim-live" id="mobile-sim">
         <div class="mobile-side">
+          <div class="mobile-side-label">اختر الدور</div>
           <div class="mobile-roles">
             ${Object.values(this.roles).map((r) => `
               <button type="button" class="mobile-role-card${this.role === r.id ? " active" : ""}" data-mobile-role="${r.id}">
@@ -243,15 +250,16 @@ const MobileSim = {
           </div>
         </div>
 
-        <div class="phone-frame" id="phone-frame">
-          <div class="phone-notch"></div>
-          <div class="phone-screen" id="phone-screen"></div>
+        <div class="phone-stage">
+          <div class="phone-frame" id="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen" id="phone-screen"></div>
+          </div>
         </div>
 
         <aside class="mobile-guide">
           <div class="guide-top">
-            <h4>لوحة التحضير والخيارات</h4>
-            <button type="button" class="m-btn m-btn-ghost m-btn-sm" data-mobile-action="reprep">إعادة التحضير</button>
+            <h4>التحكم السريع</h4>
           </div>
           <div class="guide-status">
             <div><span>الدور</span><b>${this.roles[this.role].title}</b></div>
@@ -259,24 +267,25 @@ const MobileSim = {
             <div><span>السيناريو</span><b>${this.scenarioLabel()}</b></div>
             <div><span>الوردية</span><b>${this.shiftOn ? "نشطة" : "غير مفعّلة"}</b></div>
           </div>
-          <ol>
-            <li>بدّل الأدوار من اليمين لتجربة حارس / مشرف / عميل.</li>
-            <li>غيّر الموقع النشط لمحاكاة العمل على موقعي تناهي.</li>
-            <li>استخدم تبويبات التطبيق وأزرار الإجراءات داخل الشاشة.</li>
-            <li>جرّب سيناريو «تمرين طوارئ» عبر إعادة التحضير.</li>
-          </ol>
-          <div class="guide-chips">
-            <span>تحضير مسبق</span>
-            <span>اختيار موقع</span>
-            <span>سيناريوهات</span>
-            <span>جولات نقاط</span>
-            <span>بلاغات متدرجة</span>
-            <span>KPIs عميل</span>
-            <span>طوارئ SOS</span>
+
+          <div class="guide-scenario">
+            <span>سيناريو التشغيل</span>
+            <div class="site-switch-row">
+              ${scenarios.map((s) => `
+                <button type="button" class="site-chip${this.scenario === s.id ? " active" : ""}" data-mobile-scenario="${s.id}">${s.title}</button>
+              `).join("")}
+            </div>
           </div>
+
+          <ol>
+            <li>بدّل الأدوار لتجربة حارس / مشرف / عميل.</li>
+            <li>غيّر الموقع أو السيناريو وشاهد التحديث فورًا.</li>
+            <li>استخدم تبويبات الشاشة وأزرار الإجراءات داخل التطبيق.</li>
+          </ol>
+
           <div class="guide-quick">
-            <button type="button" class="m-btn m-btn-primary m-btn-sm" data-mobile-action="demo-tour">تجربة جولة سريعة</button>
-            <button type="button" class="m-btn m-btn-danger m-btn-sm" data-mobile-action="demo-sos">تجربة طوارئ</button>
+            <button type="button" class="m-btn m-btn-primary m-btn-sm" data-mobile-action="demo-tour">تجربة جولة</button>
+            <button type="button" class="m-btn m-btn-danger m-btn-sm" data-mobile-action="demo-sos">طوارئ SOS</button>
           </div>
         </aside>
       </div>
@@ -663,7 +672,23 @@ const MobileSim = {
       if (scenarioBtn && host.contains(scenarioBtn)) {
         this.scenario = scenarioBtn.dataset.mobileScenario;
         this.persist();
-        this.rerenderShell();
+        if (!this.ready) this.rerenderShell();
+        else {
+          host.querySelectorAll("[data-mobile-scenario]").forEach((b) => {
+            b.classList.toggle("active", b.dataset.mobileScenario === this.scenario);
+          });
+          const status = host.querySelector(".guide-status");
+          if (status) {
+            status.innerHTML = `
+              <div><span>الدور</span><b>${this.roles[this.role].title}</b></div>
+              <div><span>الموقع</span><b>${this.site().name}</b></div>
+              <div><span>السيناريو</span><b>${this.scenarioLabel()}</b></div>
+              <div><span>الوردية</span><b>${this.shiftOn ? "نشطة" : "غير مفعّلة"}</b></div>
+            `;
+          }
+          this.renderPhone();
+          this.phoneToast(`السيناريو: ${this.scenarioLabel()}`);
+        }
         return;
       }
 
@@ -714,7 +739,7 @@ const MobileSim = {
     const head = `
       <div class="plat-section-head">
         <h3>تطبيق الجوال</h3>
-        <p>محاكاة كاملة مع آلية تحضير وخيارات أدوار ومواقع وسيناريوهات تشغيل</p>
+        <p>محاكاة مباشرة — حارس · مشرف · عميل مع تبديل المواقع والسيناريوهات</p>
       </div>
     `;
     panel.innerHTML = head + this.shellHtml();
