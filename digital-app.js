@@ -16,8 +16,15 @@ const DigitalApp = {
       sessionStorage.removeItem("digital_logged_in");
       document.getElementById("app").classList.add("hidden");
       document.getElementById("login-screen").classList.remove("hidden");
+      this.closeNav();
       this.closeAssistant();
       this.toast("تم تسجيل الخروج");
+    });
+
+    document.getElementById("platform-menu-toggle")?.addEventListener("click", () => this.toggleNav());
+    document.getElementById("platform-nav-backdrop")?.addEventListener("click", () => this.closeNav());
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 980) this.closeNav();
     });
 
     const weekdays = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
@@ -35,6 +42,33 @@ const DigitalApp = {
     };
     tickHeader();
     setInterval(tickHeader, 30000);
+  },
+
+  toggleNav() {
+    const app = document.getElementById("app");
+    if (!app) return;
+    if (app.classList.contains("nav-open")) this.closeNav();
+    else this.openNav();
+  },
+
+  openNav() {
+    const app = document.getElementById("app");
+    const btn = document.getElementById("platform-menu-toggle");
+    const backdrop = document.getElementById("platform-nav-backdrop");
+    app?.classList.add("nav-open");
+    btn?.setAttribute("aria-expanded", "true");
+    btn?.setAttribute("aria-label", "إغلاق القائمة");
+    if (backdrop) backdrop.hidden = false;
+  },
+
+  closeNav() {
+    const app = document.getElementById("app");
+    const btn = document.getElementById("platform-menu-toggle");
+    const backdrop = document.getElementById("platform-nav-backdrop");
+    app?.classList.remove("nav-open");
+    btn?.setAttribute("aria-expanded", "false");
+    btn?.setAttribute("aria-label", "فتح القائمة");
+    if (backdrop) backdrop.hidden = true;
   },
 
   bindLogin() {
@@ -147,6 +181,7 @@ const DigitalApp = {
     const next = document.querySelector(`.platform-panel[data-platform-panel="${id}"]`);
     if (!next || prev === next) {
       this.syncNav(id);
+      this.closeNav();
       if (id === "messages") this.bindMessages();
       if (id === "users") this.bindUsers();
       if (id === "alerts") this.bindAlerts();
@@ -164,6 +199,7 @@ const DigitalApp = {
 
     next.classList.add("active");
     document.querySelector(".platform-main")?.scrollTo({ top: 0, behavior: "smooth" });
+    this.closeNav();
 
     if (id === "home") setTimeout(() => this.initDigitalMap(), 40);
     if (id === "mobile") setTimeout(() => MobileSim.bind(), 30);
